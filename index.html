@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Me Anything</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            font-size: 16px;
+            margin-bottom: 15px;
+            resize: none;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            transition: all 0.3s;
+        }
+        
+        .btn:hover::after {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .success-message {
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .file-upload {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .file-upload-label {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .file-upload-label:hover {
+            background: rgba(67, 97, 238, 0.2);
+        }
+        
+        .file-upload-label i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .preview-container {
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            border: none;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: none;
+        }
+        
+        .remove-image:hover {
+            transform: scale(1.1);
+            color: #d30f5a;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+        }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            display: none;
+            z-index: 10;
+            max-width: 250px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .emoji {
+            font-size: 24px;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .emoji:hover {
+            transform: scale(1.2);
+        }
+        
+        .emoji-trigger {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s;
+        }
+        
+        .emoji-trigger:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div id="nameCard" class="card animate__animated animate__fadeIn">
+            <h1>What's your name? 👋</h1>
+            <div class="input-group">
+                <textarea id="nameInput" placeholder="Type your name here..." rows="1"></textarea>
+            </div>
+            <button id="nameSubmit" class="btn pulse">Continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div id="questionCard" class="card hidden animate__animated">
+            <h1>Ask me anything! ❤️</h1>
+            
+            <div class="file-upload">
+                <label for="imageUpload" class="file-upload-label">
+                    <i class="fas fa-image"></i> Add Photo (Optional)
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="preview-container">
+                <img id="imagePreview" class="image-preview" src="#" alt="Preview Image">
+                <button id="removeImage" class="remove-image" title="Remove image">×</button>
+            </div>
+            
+            <div class="input-group" style="position: relative;">
+                <textarea id="questionInput" placeholder="Type your question here..." rows="4"></textarea>
+                <button id="emojiTrigger" class="emoji-trigger">😊</button>
+                <div id="emojiPicker" class="emoji-picker"></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            
+            <button id="questionSubmit" class="btn floating">Send Question <i class="fas fa-paper-plane"></i></button>
+        </div>
+        
+        <div id="successMessage" class="success-message hidden animate__animated">
+            <i class="fas fa-check-circle" style="color: #4BB543; font-size: 50px; margin-bottom: 15px;"></i>
+            <h2>Your question has been sent!</h2>
+            <p>Thank you for your message ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const nameCard = document.getElementById('nameCard');
+            const questionCard = document.getElementById('questionCard');
+            const nameInput = document.getElementById('nameInput');
+            const questionInput = document.getElementById('questionInput');
+            const nameSubmit = document.getElementById('nameSubmit');
+            const questionSubmit = document.getElementById('questionSubmit');
+            const successMessage = document.getElementById('successMessage');
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const removeImage = document.getElementById('removeImage');
+            const progressBar = document.querySelector('.progress-bar');
+            const progress = document.querySelector('.progress');
+            const emojiTrigger = document.getElementById('emojiTrigger');
+            const emojiPicker = document.getElementById('emojiPicker');
+            
+            // State
+            let selectedFile = null;
+            let isSending = false;
+            
+            // Telegram config
+            const botToken = '8462519235:AAGl24o50hhSQkaoh5mfir4l8VuAAowqSwY';
+            const chatId = '5726066125';
+            
+            // Emojis for picker
+            const emojis = ['😀', '😂', '❤️', '🔥', '👍', '👏', '🙏', '🤔', '😍', '🥰', '😎', '🤩', '😊', '🙌', '💯', '🎉', '🤗', '😘', '🤪', '😜'];
+            
+            // Initialize emoji picker
+            emojis.forEach(emoji => {
+                const span = document.createElement('span');
+                span.className = 'emoji';
+                span.textContent = emoji;
+                span.addEventListener('click', () => {
+                    questionInput.value += emoji;
+                    questionInput.focus();
+                    emojiPicker.style.display = 'none';
+                });
+                emojiPicker.appendChild(span);
+            });
+            
+            // Event Listeners
+            nameSubmit.addEventListener('click', proceedToQuestion);
+            nameInput.addEventListener('keypress', (e) => e.key === 'Enter' && proceedToQuestion());
+            
+            questionSubmit.addEventListener('click', sendQuestion);
+            questionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuestion();
+                }
+            });
+            
+            imageUpload.addEventListener('change', handleImageUpload);
+            removeImage.addEventListener('click', removeUploadedImage);
+            emojiTrigger.addEventListener('click', toggleEmojiPicker);
+            
+            // Close emoji picker when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!emojiPicker.contains(e.target) && e.target !== emojiTrigger) {
+                    emojiPicker.style.display = 'none';
+                }
+            });
+            
+            // Functions
+            function proceedToQuestion() {
+                const name = nameInput.value.trim();
+                if (name) {
+                    nameCard.classList.add('animate__fadeOut');
+                    setTimeout(() => {
+                        nameCard.classList.add('hidden');
+                        questionCard.classList.remove('hidden');
+                        questionCard.classList.add('animate__fadeIn');
+                    }, 500);
+                } else {
+                    shakeElement(nameInput);
+                }
+            }
+            
+            async function sendQuestion() {
+                if (isSending) return;
+                
+                const name = nameInput.value.trim();
+                const question = questionInput.value.trim();
+                
+                if (!question && !selectedFile) {
+                    shakeElement(questionInput);
+                    return;
+                }
+                
+                isSending = true;
+                questionSubmit.disabled = true;
+                progressBar.style.display = 'block';
+                
+                // Simulate progress
+                let progressValue = 0;
+                const progressInterval = setInterval(() => {
+                    progressValue += Math.random() * 10;
+                    if (progressValue >= 100) {
+                        progressValue = 100;
+                        clearInterval(progressInterval);
+                    }
+                    progress.style.width = `${progressValue}%`;
+                }, 200);
+                
+                try {
+                    // Prepare message
+                    let message = `New question!\nFrom: ${name || 'Anonymous'}`;
+                    if (question) message += `\nQuestion: ${question}`;
+                    
+                    // Send to Telegram
+                    if (selectedFile) {
+                        await sendToTelegramWithPhoto(message);
+                    } else {
+                        await sendToTelegram(message);
+                    }
+                    
+                    // Show success
+                    showSuccess();
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError();
+                } finally {
+                    isSending = false;
+                    questionSubmit.disabled = false;
+                    clearInterval(progressInterval);
+                    progressBar.style.display = 'none';
+                    progress.style.width = '0%';
+                }
+            }
+            
+            async function sendToTelegram(message) {
+                return fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`);
+            }
+            
+            async function sendToTelegramWithPhoto(message) {
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', selectedFile);
+                if (message) formData.append('caption', message);
+                
+                return fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+            
+            function handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (file && file.type.match('image.*')) {
+                    selectedFile = file;
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        removeImage.style.display = 'block';
+                        imagePreview.classList.add('animate__animated', 'animate__fadeIn');
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function removeUploadedImage() {
+                selectedFile = null;
+                imageUpload.value = '';
+                imagePreview.style.display = 'none';
+                removeImage.style.display = 'none';
+                imagePreview.src = '#';
+            }
+            
+            function toggleEmojiPicker(e) {
+                e.stopPropagation();
+                emojiPicker.style.display = emojiPicker.style.display === 'flex' ? 'none' : 'flex';
+            }
+            
+            function showSuccess() {
+                questionCard.classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    questionCard.classList.add('hidden');
+                    successMessage.classList.remove('hidden');
+                    successMessage.classList.add('animate__fadeIn');
+                    createConfetti();
+                    
+                    // Reset form after 3 seconds
+                    setTimeout(resetForm, 3000);
+                }, 500);
+            }
+            
+            function showError() {
+                shakeElement(questionSubmit);
+                alert('Failed to send question. Please try again.');
+            }
+            
+            function resetForm() {
+                successMessage.classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    // Reset all fields
+                    nameInput.value = '';
+                    questionInput.value = '';
+                    selectedFile = null;
+                    imageUpload.value = '';
+                    imagePreview.style.display = 'none';
+                    removeImage.style.display = 'none';
+                    imagePreview.src = '#';
+                    
+                    // Show name card again
+                    successMessage.classList.add('hidden');
+                    nameCard.classList.remove('hidden');
+                    nameCard.classList.remove('animate__fadeOut');
+                    nameCard.classList.add('animate__fadeIn');
+                }, 500);
+            }
+            
+            function shakeElement(element) {
+                element.classList.add('animate__animated', 'animate__headShake');
+                element.addEventListener('animationend', () => {
+                    element.classList.remove('animate__animated', 'animate__headShake');
+                });
+            }
+            
+            function createConfetti() {
+                const colors = ['#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#f72585'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = -10 + 'px';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    const animationDuration = Math.random() * 3 + 2;
+                    
+                    confetti.style.animation = `confettiFall ${animationDuration}s linear forwards`;
+                    confetti.style.opacity = '1';
+                    
+                    // Create keyframes dynamically
+                    const keyframes = `
+                        @keyframes confettiFall {
+                            to {
+                                transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    
+                    const styleEl = document.createElement('style');
+                    styleEl.innerHTML = keyframes;
+                    document.head.appendChild(styleEl);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                        styleEl.remove();
+                    }, animationDuration * 1000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
